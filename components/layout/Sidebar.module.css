@@ -1,0 +1,115 @@
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    position: sticky;
+    top: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    padding-left: 12px;
+}
+
+.logoIcon {
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.logoText {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    font-weight: 500;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    text-decoration: none;
+}
+
+.navItem:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-main);
+}
+
+.active {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+}
+
+.active:hover {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #FBBF24;
+    /* Amber-400 equivalent for the gold look */
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 24px 16px 12px;
+    text-transform: uppercase;
+}
+
+.sectionHeaderIcon {
+    color: #FBBF24;
+}
+
+.vipBadge {
+    margin-left: auto;
+    background: #422006;
+    /* Dark amber/brown background */
+    color: #FBBF24;
+    border: 1px solid #78350F;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+.premiumItem {
+    color: #F59E0B;
+    /* Amber-500 */
+}
+
+.premiumItem:hover {
+    color: #FBBF24;
+    background: rgba(251, 191, 36, 0.1);
+}
+
+.footer {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
