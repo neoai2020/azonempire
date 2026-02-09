@@ -8,18 +8,31 @@ import { Input } from '@/components/ui/Input';
 import { Lock, Mail } from 'lucide-react';
 import styles from './page.module.css';
 
+import { supabase } from '@/lib/supabase';
+
 export default function LoginPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate login
-        setTimeout(() => {
+        setError(null);
+
+        const { error: authError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (authError) {
+            setError(authError.message);
             setLoading(false);
+        } else {
             router.push('/dashboard');
-        }, 1500);
+        }
     };
 
     return (
@@ -37,14 +50,20 @@ export default function LoginPage() {
                         label="Email"
                         type="email"
                         placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                     <Input
                         label="Password"
                         type="password"
                         placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                     />
+
+                    {error && <p className={styles.errorText}>{error}</p>}
 
                     <Button type="submit" isLoading={loading} className={styles.submitBtn}>
                         Sign In
@@ -54,7 +73,7 @@ export default function LoginPage() {
                 <div className={styles.footer}>
                     <Link href="#" className={styles.link}>Forgot password?</Link>
                     <span className={styles.divider}>•</span>
-                    <Link href="#" className={styles.link}>Create account</Link>
+                    <Link href="/register" className={styles.link}>Create account</Link>
                 </div>
             </div>
         </div>

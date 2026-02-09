@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import { LayoutDashboard, Wand2, FolderOpen, Zap, GraduationCap, Settings, LogOut, Crown, Sparkles, Rocket } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -21,6 +23,13 @@ const PREMIUM_ITEMS = [
 
 export const Sidebar = () => {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) console.error('Error logging out:', error);
+        router.push('/login');
+    };
 
     return (
         <aside className={styles.sidebar}>
@@ -70,11 +79,11 @@ export const Sidebar = () => {
             </nav>
 
             <div className={styles.footer}>
-                <button className={styles.navItem}>
+                <Link href="/dashboard/settings" className={styles.navItem}>
                     <Settings size={20} />
                     <span>Settings</span>
-                </button>
-                <button className={styles.navItem}>
+                </Link>
+                <button onClick={handleLogout} className={styles.navItem} style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left', font: 'inherit' }}>
                     <LogOut size={20} />
                     <span>Logout</span>
                 </button>

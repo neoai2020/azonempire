@@ -1,9 +1,58 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import { VideoCard } from '@/components/dashboard/VideoCard';
 import { StatTile } from '@/components/dashboard/StatTile';
 import { MousePointerClick, Eye, Layers, TrendingUp } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { Project, DashboardStats } from '@/types';
 
 export default function DashboardPage() {
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [stats, setStats] = useState<DashboardStats>({
+        total_assets: 0,
+        total_views: 0,
+        outbound_clicks: 0,
+        conversion_estimation: 0
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            try {
+                // Fetch projects
+                const { data: projectsData, error: projectsError } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .order('last_updated', { ascending: false });
+
+                if (projectsError) throw projectsError;
+                if (projectsData) setProjects(projectsData);
+
+                // In a real app, stats would be aggregated or fetched from a stats table
+                // For now, let's aggregate them from projects or use mock stats if table doesn't exist
+                const aggregateStats: DashboardStats = {
+                    total_assets: projectsData?.length || 0,
+                    total_views: projectsData?.reduce((acc, p) => acc + (p.views || 0), 0) || 0,
+                    outbound_clicks: projectsData?.reduce((acc, p) => acc + (p.clicks || 0), 0) || 0,
+                    conversion_estimation: (projectsData?.reduce((acc, p) => acc + (p.clicks || 0), 0) || 0) * 2.5, // Mock multiplier
+                };
+                setStats(aggregateStats);
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return <div style={{ padding: '40px', textAlign: 'center' }}>Loading your empire...</div>;
+    }
+
     return (
         <div>
             <VideoCard />
@@ -18,28 +67,28 @@ export default function DashboardPage() {
             }}>
                 <StatTile
                     label="Total Assets"
-                    value="3"
+                    value={stats.total_assets.toString()}
                     icon={Layers}
-                    trend="2 new this week"
+                    trend="Updated live"
                     trendUp
                 />
                 <StatTile
                     label="Total Views"
-                    value="1,248"
+                    value={stats.total_views.toLocaleString()}
                     icon={Eye}
-                    trend="12%"
+                    trend="Overall"
                     trendUp
                 />
                 <StatTile
                     label="Outbound Clicks"
-                    value="86"
+                    value={stats.outbound_clicks.toLocaleString()}
                     icon={MousePointerClick}
-                    trend="5%"
+                    trend="Across all projects"
                     trendUp
                 />
                 <StatTile
                     label="Conversion Estimation"
-                    value="$240"
+                    value={`$${stats.conversion_estimation.toLocaleString()}`}
                     icon={TrendingUp}
                 />
             </div>
@@ -66,28 +115,30 @@ export default function DashboardPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {[
-                            { name: 'Sony WH-1000XM4 Review', status: 'Live', views: 843, clicks: 42, date: '2 days ago' },
-                            { name: 'Best Air Fryers 2024', status: 'Draft', views: '-', clicks: '-', date: '5 hours ago' },
-                            { name: 'Mechanical Keyboards Guide', status: 'Live', views: 405, clicks: 18, date: '1 week ago' },
-                        ].map((asset, i) => (
-                            <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                                <td style={{ padding: '16px 0', fontWeight: 500 }}>{asset.name}</td>
+                        {projects.length === 0 ? (
+                            <tr>
+                                <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                                    No assets found. Start by creating one!
+                                </td>
+                            </tr>
+                        ) : projects.map((project, i) => (
+                            <tr key={project.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                                <td style={{ padding: '16px 0', fontWeight: 500 }}>{project.name}</td>
                                 <td style={{ padding: '16px 0' }}>
                                     <span style={{
                                         padding: '4px 8px',
                                         borderRadius: '12px',
                                         fontSize: '0.75rem',
-                                        background: asset.status === 'Live' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                                        color: asset.status === 'Live' ? 'var(--success)' : 'var(--text-muted)',
-                                        border: `1px solid ${asset.status === 'Live' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.1)'}`
+                                        background: project.status === 'Live' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                                        color: project.status === 'Live' ? 'var(--success)' : 'var(--text-muted)',
+                                        border: `1px solid ${project.status === 'Live' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.1)'}`
                                     }}>
-                                        {asset.status}
+                                        {project.status}
                                     </span>
                                 </td>
-                                <td style={{ padding: '16px 0', color: 'var(--text-dim)' }}>{asset.views}</td>
-                                <td style={{ padding: '16px 0', color: 'var(--text-dim)' }}>{asset.clicks}</td>
-                                <td style={{ padding: '16px 0', color: 'var(--text-muted)' }}>{asset.date}</td>
+                                <td style={{ padding: '16px 0', color: 'var(--text-dim)' }}>{project.views}</td>
+                                <td style={{ padding: '16px 0', color: 'var(--text-dim)' }}>{project.clicks}</td>
+                                <td style={{ padding: '16px 0', color: 'var(--text-muted)' }}>{new Date(project.last_updated).toLocaleDateString()}</td>
                             </tr>
                         ))}
                     </tbody>

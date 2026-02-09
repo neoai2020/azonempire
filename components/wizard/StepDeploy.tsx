@@ -3,21 +3,51 @@
 import React, { useEffect, useState } from 'react';
 import { useWizard } from '@/lib/store/wizard-context';
 import { Button } from '@/components/ui/Button';
-import { CheckCircle, ExternalLink, Copy } from 'lucide-react';
+import { CheckCircle, ExternalLink, Copy, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import styles from './WizardSteps.module.css';
 
 export const StepDeploy = () => {
     const { data } = useWizard();
     const router = useRouter();
     const [deploying, setDeploying] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        const persistProject = async () => {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+
+                if (!user) throw new Error('User not found');
+
+                const { error: insertError } = await supabase
+                    .from('projects')
+                    .insert({
+                        name: data.keyword,
+                        status: 'Live',
+                        views: 0,
+                        clicks: 0,
+                        user_id: user.id,
+                        last_updated: new Date().toISOString()
+                    });
+
+                if (insertError) throw insertError;
+
+                setDeploying(false);
+            } catch (err: any) {
+                console.error('Error persisting project:', err);
+                setError(err.message);
+                setDeploying(false);
+            }
+        };
+
         const timer = setTimeout(() => {
-            setDeploying(false);
-        }, 2500);
+            persistProject();
+        }, 2000);
+
         return () => clearTimeout(timer);
-    }, []);
+    }, [data, supabase]);
 
     if (deploying) {
         return (
@@ -28,7 +58,26 @@ export const StepDeploy = () => {
         );
     }
 
-    const liveUrl = `https://best-reviews.com/${data.keyword.replace(/\s+/g, '-').toLowerCase()}`;
+    if (error) {
+        return (
+            <div className={styles.stepContainer} style={{ alignItems: 'center', textAlign: 'center' }}>
+                <div style={{ color: 'var(--danger)', marginBottom: '24px' }}>
+                    <AlertCircle size={64} />
+                </div>
+                <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '8px' }}>Deployment Failed</h2>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '32px' }}>{error}</p>
+                <Button onClick={() => window.location.reload()}>Try Again</Button>
+            </div>
+        );
+    }
+
+    const [baseUrl, setBaseUrl] = useState('');
+
+    useEffect(() => {
+        setBaseUrl(window.location.origin);
+    }, []);
+
+    const liveUrl = `${baseUrl}/${data.keyword.replace(/\s+/g, '-').toLowerCase()}`;
 
     return (
         <div className={styles.stepContainer} style={{ alignItems: 'center', textAlign: 'center' }}>
