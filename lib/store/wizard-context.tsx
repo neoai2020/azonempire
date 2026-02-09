@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { AmazonProduct } from '@/lib/api/amazon';
+import { AmazonProduct } from '@/types';
 
 interface WizardData {
     keyword: string;

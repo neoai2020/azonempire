@@ -1,0 +1,135 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.headerContainer {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+}
+
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.input {
+    font-size: 1.1rem;
+    padding: 12px;
+}
+
+.platformGrid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.platformButton {
+    flex: 1;
+    min-width: 140px;
+    padding: 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    border: 2px solid var(--border-subtle);
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.platformButton.active {
+    border-color: var(--primary);
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--primary);
+}
+
+.generateButton {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+}
+
+.resultContainer {
+    background: #1a1a1a;
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+}
+
+.resultHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.resultTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.copyButton {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-surface);
+    color: var(--text-main);
+}
+
+.copyButton.copied {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
+}
+
+.textarea {
+    width: 100%;
+    min-height: 200px;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+}

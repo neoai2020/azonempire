@@ -54,36 +54,30 @@ export default function BoostPage() {
     };
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px' }}>
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+        <div className={styles.container}>
+            <div className={styles.headerContainer}>
+                <h1 className={styles.title}>
                     <Sparkles size={32} color="#FFD700" /> Boost Your Assets
                 </h1>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
+                <p className={styles.subtitle}>
                     Generate AI-powered marketing content to drive traffic to your reviews.
                 </p>
             </div>
 
-            <div style={{
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '16px',
-                padding: '32px',
-                marginBottom: '32px'
-            }}>
-                <div style={{ marginBottom: '24px' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>Product Name / Topic</label>
+            <div className={styles.card}>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Product Name / Topic</label>
                     <Input
                         placeholder="e.g. FIFA 23, Bose QuietComfort 45..."
                         value={productName}
                         onChange={(e) => setProductName(e.target.value)}
-                        style={{ fontSize: '1.1rem', padding: '12px' }}
+                        className={styles.input}
                     />
                 </div>
 
-                <div style={{ marginBottom: '32px' }}>
-                    <label style={{ display: 'block', marginBottom: '12px', fontWeight: 500 }}>Select Platform</label>
-                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Select Platform</label>
+                    <div className={styles.platformGrid}>
                         {[
                             { id: 'facebook', icon: Facebook, label: 'Facebook' },
                             { id: 'twitter', icon: Twitter, label: 'Twitter / X' },
@@ -93,21 +87,7 @@ export default function BoostPage() {
                             <button
                                 key={p.id}
                                 onClick={() => setPlatform(p.id as any)}
-                                style={{
-                                    flex: 1,
-                                    minWidth: '140px',
-                                    padding: '16px',
-                                    borderRadius: '12px',
-                                    border: `2px solid ${platform === p.id ? 'var(--primary)' : 'var(--border-subtle)'}`,
-                                    background: platform === p.id ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                                    color: platform === p.id ? 'var(--primary)' : 'var(--text-muted)',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    transition: 'all 0.2s ease'
-                                }}
+                                className={`${styles.platformButton} ${platform === p.id ? styles.active : ''}`}
                             >
                                 <p.icon size={24} />
                                 <span style={{ fontWeight: 600 }}>{p.label}</span>
@@ -119,7 +99,7 @@ export default function BoostPage() {
                 <Button
                     onClick={handleGenerate}
                     disabled={!productName || loading}
-                    style={{ width: '100%', padding: '16px', fontSize: '1.1rem' }}
+                    className={styles.generateButton}
                 >
                     {loading ? (
                         <>
@@ -136,29 +116,12 @@ export default function BoostPage() {
             </div>
 
             {generatedContent && (
-                <div style={{
-                    background: '#1a1a1a',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '16px',
-                    padding: '24px',
-                    position: 'relative'
-                }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Generated Content</h3>
+                <div className={styles.resultContainer}>
+                    <div className={styles.resultHeader}>
+                        <h3 className={styles.resultTitle}>Generated Content</h3>
                         <button
                             onClick={handleCopy}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                padding: '8px 16px',
-                                borderRadius: '8px',
-                                background: copied ? 'var(--success)' : 'var(--bg-surface)',
-                                color: copied ? 'white' : 'var(--text-main)',
-                                border: '1px solid var(--border-subtle)',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s'
-                            }}
+                            className={`${styles.copyButton} ${copied ? styles.copied : ''}`}
                         >
                             {copied ? <Check size={16} /> : <Copy size={16} />}
                             {copied ? 'Copied!' : 'Copy'}
@@ -168,18 +131,7 @@ export default function BoostPage() {
                     <textarea
                         readOnly
                         value={generatedContent}
-                        style={{
-                            width: '100%',
-                            minHeight: '200px',
-                            background: 'transparent',
-                            border: 'none',
-                            color: 'var(--text-main)',
-                            fontSize: '1rem',
-                            lineHeight: '1.6',
-                            resize: 'none',
-                            outline: 'none',
-                            fontFamily: 'inherit'
-                        }}
+                        className={styles.textarea}
                     />
                 </div>
             )}

@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useWizard } from '@/lib/store/wizard-context';
 import { Button } from '@/components/ui/Button';
-import { searchProducts, AmazonProduct } from '@/lib/api/amazon';
+import { searchProducts } from '@/lib/api/amazon';
+import { AmazonProduct } from '@/types';
 import { ExternalLink, Check } from 'lucide-react';
 import styles from './WizardSteps.module.css';
 
@@ -35,7 +36,7 @@ export const StepProductSearch = () => {
             </div>
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                <div className={styles.loadingState}>
                     Searching Amazon...
                 </div>
             ) : (
@@ -43,18 +44,18 @@ export const StepProductSearch = () => {
                     {products.map((product) => (
                         <div key={product.asin} className={styles.productCard}>
                             <div className={styles.productImage}>
-                                <img src={product.image} alt={product.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                <img src={product.image} alt={product.title} />
                             </div>
                             <h3 className={styles.productTitle}>{product.title}</h3>
                             <div className={styles.productMeta}>
                                 <span className={styles.price}>{product.price}</span>
-                                <span>★ {product.rating} ({product.reviews})</span>
+                                <span className={styles.productRating}>★ {product.rating} ({product.reviews})</span>
                             </div>
-                            <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
+                            <div className={styles.actionRow}>
                                 <Button
                                     size="sm"
                                     onClick={() => handleSelect(product)}
-                                    style={{ flex: 1 }}
+                                    className={styles.selectButton}
                                 >
                                     Select
                                 </Button>
@@ -62,14 +63,7 @@ export const StepProductSearch = () => {
                                     href={product.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        padding: '8px',
-                                        border: '1px solid var(--border-subtle)',
-                                        borderRadius: 'var(--radius-sm)'
-                                    }}
+                                    className={styles.externalLink}
                                 >
                                     <ExternalLink size={16} />
                                 </a>
@@ -79,7 +73,7 @@ export const StepProductSearch = () => {
                 </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '24px' }}>
+            <div className={styles.backButtonContainer}>
                 <Button variant="ghost" onClick={prevStep}>Back</Button>
             </div>
         </div>

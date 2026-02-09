@@ -1,16 +1,6 @@
-// Mock Data for Amazon Products
+import { AmazonProduct } from '@/types';
 
-export interface AmazonProduct {
-    asin: string;
-    title: string;
-    image: string;
-    price: string;
-    rating: number;
-    reviews: number;
-    url: string;
-    description?: string;
-    features?: string[];
-}
+// Mock Data for Amazon Products
 
 const MOCK_PRODUCTS: AmazonProduct[] = [
     {
