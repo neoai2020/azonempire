@@ -36,7 +36,7 @@ export const StepKeyword = () => {
 
             <div className={styles.searchBox}>
                 <Input
-                    placeholder="e.g. Wireless Earlbuds"
+                    placeholder="e.g. Wireless Earbuds"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}

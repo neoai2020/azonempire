@@ -72,7 +72,7 @@ export const StepGenerator = () => {
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
             }}>
                 {/* Mock Page Content */}
-                <div style={{ height: '100%', overflowY: 'auto', color: 'black', fontFamily: 'sans-serif' }}>
+                <div style={{ height: '100%', overflowY: 'auto', color: 'black', fontFamily: 'sans-serif', direction: 'ltr' }}>
                     <div style={{ background: '#232f3e', padding: '16px', color: 'white', display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ fontWeight: 'bold' }}>BestReviews</span>
                         <span>Menu</span>

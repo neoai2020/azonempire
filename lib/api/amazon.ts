@@ -64,12 +64,14 @@ const MOCK_PRODUCTS: AmazonProduct[] = [
 ];
 
 export const searchProducts = async (query: string): Promise<AmazonProduct[]> => {
-    console.log(`Searching for: ${query}`);
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    // Return all mock products filtered loosely (or just all for demo)
-    return MOCK_PRODUCTS;
+    try {
+        const response = await fetch(`/api/amazon/search?q=${encodeURIComponent(query)}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        return await response.json();
+    } catch (error) {
+        console.error('Amazon Search Client Error:', error);
+        return [];
+    }
 };
 
 export const getProductDetails = async (asin: string): Promise<AmazonProduct | null> => {
