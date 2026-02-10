@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         const options = {
             method: 'POST',
             headers: {
-                'x-rapidapi-key': 'e58a784d0dmsh8c00f2f58365008p103943jsn729926f8c316',
+                'x-rapidapi-key': process.env.RAPIDAPI_KEY!,
                 'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
                 'Content-Type': 'application/json'
             },

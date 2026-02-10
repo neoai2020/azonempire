@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 
         const safeQuery = validation.data;
 
-        const API_KEY = '32b75ca1bab9047cfa6197108747e16f';
+        const API_KEY = process.env.SCRAPERAPI_KEY!;
         const baseUrl = 'http://api.scraperapi.com';
         const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(safeQuery)}`;
         const fetchUrl = `${baseUrl}?api_key=${API_KEY}&url=${encodeURIComponent(amazonUrl)}&autoparse=true`;
