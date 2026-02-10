@@ -1,0 +1,262 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 60px;
+}
+
+/* Hero Section */
+.hero {
+    background: var(--grad-success);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: 0 20px 40px var(--success-glow);
+}
+
+.heroIcon {
+    width: 64px;
+    height: 64px;
+    background: white;
+    color: var(--success);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 32px;
+    box-shadow: var(--shadow-md);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.heroSubtitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.heroDesc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+/* Tutorial Section */
+.tutorialCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    display: flex;
+    gap: 32px;
+    padding: 32px;
+    margin-bottom: 48px;
+    align-items: center;
+}
+
+.videoPlaceholder {
+    width: 380px;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.tutorialInfo {
+    flex: 1;
+}
+
+.tutorialInfo h2 {
+    font-size: 1.75rem;
+    margin-bottom: 16px;
+}
+
+/* Secret Box */
+.secretBox {
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid var(--success-glow);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 48px;
+}
+
+.secretTitle {
+    color: var(--success);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Steps Grid */
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.stepCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+.stepNumber {
+    width: 32px;
+    height: 32px;
+    background: var(--success);
+    color: white;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+/* Progress & Control */
+.controlPanel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    margin-bottom: 40px;
+}
+
+.urlInput {
+    width: 100%;
+    background: #000;
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    color: var(--text-main);
+    font-size: 1rem;
+    margin-bottom: 24px;
+}
+
+.progressWrapper {
+    margin-bottom: 32px;
+}
+
+.progressBar {
+    height: 8px;
+    background: #111;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.progressFill {
+    height: 100%;
+    background: var(--success);
+    transition: width 0.3s ease;
+}
+
+/* Source Cards */
+.sourceGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 24px;
+}
+
+.sourceCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: transform 0.2s;
+}
+
+.sourceCard:hover {
+    transform: translateY(-4px);
+    border-color: var(--success);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badgeForum {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
+}
+
+.badgeEasy {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.sourceStats {
+    display: flex;
+    gap: 20px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.viewBtn {
+    width: 100%;
+    padding: 12px;
+    background: var(--success);
+    color: white;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+}
+
+.viewBtn:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 900px) {
+    .tutorialCard {
+        flex-direction: column;
+    }
+
+    .videoPlaceholder {
+        width: 100%;
+    }
+
+    .stepsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .sourceGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,16 +1,37 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import rateLimit from '@/src/infrastructure/lib/rate-limit';
+
+const limiter = rateLimit({
+    interval: 60 * 1000, // 60 seconds
+    uniqueTokenPerInterval: 500, // Max 500 users per second
+});
+
+const generateSchema = z.object({
+    prompt: z.string().min(1, 'Prompt is required').max(1000, 'Prompt is too long'),
+});
 
 export async function POST(request: Request) {
     try {
-        const { prompt } = await request.json();
+        // Rate Limiting
+        const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+        await limiter.check(NextResponse, 10, ip); // 10 requests per minute per IP
 
-        if (!prompt) {
-            return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+        const body = await request.json();
+
+        // Validate input using Zod
+        const validation = generateSchema.safeParse(body);
+        if (!validation.success) {
+            return NextResponse.json({
+                error: 'Invalid input',
+                details: validation.error.flatten()
+            }, { status: 400 });
         }
 
-        console.log('AI Prompt Received:', prompt);
+        const { prompt } = validation.data;
 
-        const url = 'https://chatgpt-42.p.rapidapi.com/conversationgpt4-2';
+        // We use /conversationgpt4 as it seems more stable and instruction-following than /gpt4
+        const url = 'https://chatgpt-42.p.rapidapi.com/conversationgpt4';
         const options = {
             method: 'POST',
             headers: {
@@ -19,24 +40,43 @@ export async function POST(request: Request) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                messages: [{ role: 'user', content: prompt }],
-                system_prompt: '',
+                messages: [
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ],
+                web_access: false,
                 temperature: 0.9,
-                top_k: 5,
-                top_p: 0.9,
-                max_tokens: 256,
-                web_access: false
+                top_p: 1
             })
         };
 
-        const response = await fetch(url, options);
-        const result = await response.json();
+        const response = await fetch(url, {
+            ...options,
+            cache: 'no-store'
+        });
 
-        console.log('AI Response:', JSON.stringify(result).substring(0, 200));
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+        }
 
-        return NextResponse.json(result);
-    } catch (error) {
+        const data = await response.json();
+
+        // Ensure we always return a result field to the frontend
+        const result = data.result || data.message || (typeof data === 'string' ? data : JSON.stringify(data));
+
+        return NextResponse.json({ result });
+
+    } catch (error: any) {
+        if (error.message === 'Rate limit exceeded') {
+            return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+        }
         console.error('AI API Route Error:', error);
-        return NextResponse.json({ error: 'Failed to generate text' }, { status: 500 });
+        return NextResponse.json({
+            error: 'Failed to generate text',
+            details: error.message
+        }, { status: 500 });
     }
 }

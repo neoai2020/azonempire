@@ -1,24 +1,49 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { generateText } from '@/lib/api/ai';
-import { Check, Copy, Loader2, Sparkles, Facebook, Twitter, Instagram, Globe } from 'lucide-react';
-import styles from './page.module.css'; // We'll need to create this CSS file or use inline styles for simplicity
+import { useState, useEffect } from 'react';
+import { Button } from '@/src/presentation/components/ui/Button';
+import { Input } from '@/src/presentation/components/ui/Input';
+import { generateText } from '@/src/infrastructure/api/ai';
+import { Check, Copy, Loader2, Sparkles, Facebook, Twitter, Instagram, Globe, AlertCircle } from 'lucide-react';
+import styles from './page.module.css';
+
+const LOADING_MESSAGES = [
+    "Generating Magic...",
+    "Crafting the perfect hook...",
+    "Analyzing top trends...",
+    "Polishing your content...",
+    "Almost there..."
+];
 
 export default function BoostPage() {
     const [productName, setProductName] = useState('');
     const [platform, setPlatform] = useState<'facebook' | 'twitter' | 'instagram' | 'seo'>('facebook');
     const [generatedContent, setGeneratedContent] = useState('');
     const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState(LOADING_MESSAGES[0]);
     const [copied, setCopied] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (loading) {
+            let i = 0;
+            interval = setInterval(() => {
+                i = (i + 1) % LOADING_MESSAGES.length;
+                setLoadingText(LOADING_MESSAGES[i]);
+            }, 2000);
+        } else {
+            setLoadingText(LOADING_MESSAGES[0]);
+        }
+        return () => clearInterval(interval);
+    }, [loading]);
 
     const handleGenerate = async () => {
         if (!productName) return;
 
         setLoading(true);
         setGeneratedContent('');
+        setError('');
 
         let prompt = '';
         switch (platform) {
@@ -39,9 +64,9 @@ export default function BoostPage() {
         try {
             const text = await generateText(prompt);
             setGeneratedContent(text);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Boost Generation Error:', error);
-            setGeneratedContent('Sorry, something went wrong. Please try again.');
+            setError(error.message || 'Sorry, something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -72,6 +97,7 @@ export default function BoostPage() {
                         value={productName}
                         onChange={(e) => setProductName(e.target.value)}
                         className={styles.input}
+                        disabled={loading}
                     />
                 </div>
 
@@ -87,7 +113,8 @@ export default function BoostPage() {
                             <button
                                 key={p.id}
                                 onClick={() => setPlatform(p.id as any)}
-                                className={`${styles.platformButton} ${platform === p.id ? styles.active : ''}`}
+                                disabled={loading}
+                                className={`${styles.platformButton} ${platform === p.id ? styles.active : ''} ${loading ? styles.disabled : ''}`}
                             >
                                 <p.icon size={24} />
                                 <span style={{ fontWeight: 600 }}>{p.label}</span>
@@ -95,6 +122,13 @@ export default function BoostPage() {
                         ))}
                     </div>
                 </div>
+
+                {error && (
+                    <div className="bg-red-50 text-red-600 p-3 rounded-lg flex items-center gap-2 mb-4 border border-red-200">
+                        <AlertCircle size={18} />
+                        <span>{error}</span>
+                    </div>
+                )}
 
                 <Button
                     onClick={handleGenerate}
@@ -104,7 +138,7 @@ export default function BoostPage() {
                     {loading ? (
                         <>
                             <Loader2 size={20} className="animate-spin" style={{ marginRight: '8px' }} />
-                            Generating Magic...
+                            {loadingText}
                         </>
                     ) : (
                         <>

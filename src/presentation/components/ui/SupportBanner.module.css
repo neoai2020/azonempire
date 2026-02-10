@@ -1,0 +1,92 @@
+.bannerContainer {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--primary-glow);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 48px;
+    margin-bottom: 24px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    box-sizing: border-box;
+}
+
+.contentWrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.iconCircle {
+    width: 56px;
+    height: 56px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid var(--primary-glow);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.textContent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+.description {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.actionButton {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.actionButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px var(--primary-glow);
+    background: var(--primary-hover);
+}
+
+@media (max-width: 768px) {
+    .bannerContainer {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .contentWrapper {
+        flex-direction: column;
+    }
+
+    .actionButton {
+        width: 100%;
+    }
+}

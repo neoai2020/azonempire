@@ -1,56 +1,20 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { VideoCard } from '@/components/dashboard/VideoCard';
-import { StatTile } from '@/components/dashboard/StatTile';
+import React from 'react';
+import { VideoCard } from '@/src/presentation/features/dashboard/components/VideoCard';
+import { StatTile } from '@/src/presentation/features/dashboard/components/StatTile';
+import { useDashboardStats } from '@/src/presentation/features/dashboard/hooks/useDashboardStats';
 import { MousePointerClick, Eye, Layers, TrendingUp } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { Project, DashboardStats } from '@/types';
 
 export default function DashboardPage() {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [stats, setStats] = useState<DashboardStats>({
-        total_assets: 0,
-        total_views: 0,
-        outbound_clicks: 0,
-        conversion_estimation: 0
-    });
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchData() {
-            setLoading(true);
-            try {
-                // Fetch projects
-                const { data: projectsData, error: projectsError } = await supabase
-                    .from('projects')
-                    .select('*')
-                    .order('last_updated', { ascending: false });
-
-                if (projectsError) throw projectsError;
-                if (projectsData) setProjects(projectsData);
-
-                // In a real app, stats would be aggregated or fetched from a stats table
-                // For now, let's aggregate them from projects or use mock stats if table doesn't exist
-                const aggregateStats: DashboardStats = {
-                    total_assets: projectsData?.length || 0,
-                    total_views: projectsData?.reduce((acc, p) => acc + (p.views || 0), 0) || 0,
-                    outbound_clicks: projectsData?.reduce((acc, p) => acc + (p.clicks || 0), 0) || 0,
-                    conversion_estimation: (projectsData?.reduce((acc, p) => acc + (p.clicks || 0), 0) || 0) * 2.5, // Mock multiplier
-                };
-                setStats(aggregateStats);
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchData();
-    }, []);
+    const { projects, stats, loading, error } = useDashboardStats();
 
     if (loading) {
         return <div style={{ padding: '40px', textAlign: 'center' }}>Loading your empire...</div>;
+    }
+
+    if (error) {
+        return <div style={{ padding: '40px', textAlign: 'center', color: 'red' }}>Error: {error}</div>;
     }
 
     return (

@@ -1,79 +1,60 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/src/presentation/components/ui/Button';
+import { Input } from '@/src/presentation/components/ui/Input';
 import { Lock, Mail } from 'lucide-react';
+import { useLogin } from '@/src/presentation/features/auth/hooks/useLogin';
 import styles from './page.module.css';
 
-import { supabase } from '@/lib/supabase';
-
 export default function LoginPage() {
-    const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(null);
-
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-
-        const { error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        if (authError) {
-            setError(authError.message);
-            setLoading(false);
-        } else {
-            router.push('/dashboard');
-        }
-    };
+    const { email, setEmail, password, setPassword, loading, error, handleLogin } = useLogin();
 
     return (
         <div className={styles.container}>
-            <div className={styles.backgroundGlow} />
-
-            <div className={`glass ${styles.card}`}>
+            <div className={styles.card}>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>AzonEmpire</h1>
-                    <p className={styles.subtitle}>Welcome back, Emperor.</p>
+                    <h1 className={styles.title}>Welcome Back</h1>
+                    <p className={styles.subtitle}>Enter your credentials to access your account</p>
                 </div>
 
+                {error && (
+                    <div className={styles.error}>
+                        {error}
+                    </div>
+                )}
+
                 <form onSubmit={handleLogin} className={styles.form}>
-                    <Input
-                        label="Email"
-                        type="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <Input
-                        label="Password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
+                    <div className={styles.inputGroup}>
+                        <Mail className={styles.icon} size={20} />
+                        <Input
+                            type="email"
+                            placeholder="Email address"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                    {error && <p className={styles.errorText}>{error}</p>}
+                    <div className={styles.inputGroup}>
+                        <Lock className={styles.icon} size={20} />
+                        <Input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                    <Button type="submit" isLoading={loading} className={styles.submitBtn}>
-                        Sign In
+                    <Button type="submit" className={styles.submitButton} disabled={loading}>
+                        {loading ? 'Signing in...' : 'Sign In'}
                     </Button>
                 </form>
 
                 <div className={styles.footer}>
-                    <Link href="#" className={styles.link}>Forgot password?</Link>
-                    <span className={styles.divider}>•</span>
-                    <Link href="/register" className={styles.link}>Create account</Link>
+                    <p>Don't have an account? <Link href="/register" className={styles.link}>Sign up</Link></p>
                 </div>
             </div>
         </div>

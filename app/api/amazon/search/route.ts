@@ -1,21 +1,42 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import rateLimit from '@/src/infrastructure/lib/rate-limit';
+
+const limiter = rateLimit({
+    interval: 60 * 1000, // 60 seconds
+    uniqueTokenPerInterval: 500, // Max 500 users per second
+});
+
+const searchSchema = z.string().min(1, 'Query is required').max(100, 'Query is too long');
 
 export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url);
-    const query = searchParams.get('q');
-
-    if (!query) {
-        return NextResponse.json({ error: 'Query is required' }, { status: 400 });
-    }
-
-    const API_KEY = '32b75ca1bab9047cfa6197108747e16f';
-    const baseUrl = 'http://api.scraperapi.com';
-    const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(query)}`;
-    const fetchUrl = `${baseUrl}?api_key=${API_KEY}&url=${encodeURIComponent(amazonUrl)}&autoparse=true`;
-
-    console.log(`Fetching from ScraperAPI: ${fetchUrl.replace(API_KEY, 'HIDDEN_KEY')}`);
-
     try {
+        // Rate Limiting
+        const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+        await limiter.check(NextResponse, 20, ip); // 20 requests per minute per IP
+
+        const { searchParams } = new URL(request.url);
+        const query = searchParams.get('q');
+
+        // Validate query using Zod
+        const validation = searchSchema.safeParse(query);
+
+        if (!validation.success) {
+            return NextResponse.json({
+                error: 'Invalid query',
+                details: validation.error.flatten()
+            }, { status: 400 });
+        }
+
+        const safeQuery = validation.data;
+
+        const API_KEY = '32b75ca1bab9047cfa6197108747e16f';
+        const baseUrl = 'http://api.scraperapi.com';
+        const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(safeQuery)}`;
+        const fetchUrl = `${baseUrl}?api_key=${API_KEY}&url=${encodeURIComponent(amazonUrl)}&autoparse=true`;
+
+        console.log(`Fetching from ScraperAPI: ${fetchUrl.replace(API_KEY, 'HIDDEN_KEY')}`);
+
         const response = await fetch(fetchUrl);
 
         if (!response.ok) {
@@ -45,7 +66,11 @@ export async function GET(request: Request) {
         })) : [];
 
         return NextResponse.json(mappedProducts);
-    } catch (error) {
+
+    } catch (error: any) {
+        if (error.message === 'Rate limit exceeded') {
+            return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+        }
         console.error('Amazon API Route Error:', error);
         return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
     }

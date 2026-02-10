@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { WizardProvider, useWizard } from '@/lib/store/wizard-context';
-import { StepKeyword } from '@/components/wizard/StepKeyword';
-import { StepProductSearch } from '@/components/wizard/StepProductSearch';
-import { StepAffiliateLink } from '@/components/wizard/StepAffiliateLink';
-import { StepGenerator } from '@/components/wizard/StepGenerator';
-import { StepDeploy } from '@/components/wizard/StepDeploy';
+import { WizardProvider, useWizard } from '@/src/presentation/features/wizard/context/wizard-context';
+import { StepKeyword } from '@/src/presentation/features/wizard/components/StepKeyword';
+import { StepProductSearch } from '@/src/presentation/features/wizard/components/StepProductSearch';
+import { StepAffiliateLink } from '@/src/presentation/features/wizard/components/StepAffiliateLink';
+import { StepGenerator } from '@/src/presentation/features/wizard/components/StepGenerator';
+import { StepDeploy } from '@/src/presentation/features/wizard/components/StepDeploy';
 import styles from './page.module.css';
 
 const WizardContent = () => {

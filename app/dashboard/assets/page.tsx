@@ -1,49 +1,30 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import React from 'react';
+import { Button } from '@/src/presentation/components/ui/Button';
 import { Plus, Edit, ExternalLink, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { Project } from '@/types';
+import { useAssets } from '@/src/presentation/features/assets/hooks/useAssets';
 
 export default function MyAssetsPage() {
     const router = useRouter();
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { projects, loading, error, handleDelete } = useAssets();
 
-    useEffect(() => {
-        async function fetchProjects() {
-            setLoading(true);
-            try {
-                const { data, error } = await supabase
-                    .from('projects')
-                    .select('*')
-                    .order('last_updated', { ascending: false });
-
-                if (error) throw error;
-                if (data) setProjects(data);
-            } catch (err) {
-                console.error('Error fetching projects:', err);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchProjects();
-    }, []);
-
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this asset?')) return;
-
-        try {
-            const { error } = await supabase.from('projects').delete().eq('id', id);
-            if (error) throw error;
-            setProjects(projects.filter(p => p.id !== id));
-        } catch (err) {
-            console.error('Error deleting project:', err);
-            alert('Failed to delete asset');
-        }
+    const handleCreateNew = () => {
+        router.push('/dashboard/wizard');
     };
+
+    const handleEdit = (id: string) => {
+        router.push(`/dashboard/assets/edit/${id}`);
+    };
+
+    if (loading) {
+        return <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading assets...</div>;
+    }
+
+    if (error) {
+        return <div style={{ padding: '40px', textAlign: 'center', color: 'red' }}>Error: {error}</div>;
+    }
 
     return (
         <div>
@@ -100,7 +81,11 @@ export default function MyAssetsPage() {
                                         {new Date(project.last_updated).toLocaleDateString()}
                                     </td>
                                     <td style={{ padding: '16px 24px', display: 'flex', gap: '8px' }}>
-                                        <button title="Edit" style={{ padding: '8px', color: 'var(--text-muted)', borderRadius: '4px', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                        <button
+                                            title="Edit"
+                                            onClick={() => router.push(`/dashboard/assets/edit/${project.id}`)}
+                                            style={{ padding: '8px', color: 'var(--text-muted)', borderRadius: '4px', background: 'none', border: 'none', cursor: 'pointer' }}
+                                        >
                                             <Edit size={16} />
                                         </button>
                                         <button
@@ -113,7 +98,7 @@ export default function MyAssetsPage() {
                                         {project.status === 'Live' && (
                                             <button
                                                 title="View Live"
-                                                onClick={() => window.open(`${window.location.origin}/${project.name.replace(/\s+/g, '-').toLowerCase()}`, '_blank')}
+                                                onClick={() => window.open(`${window.location.origin}/${project.slug}`, '_blank')}
                                                 style={{ padding: '8px', color: 'var(--text-muted)', borderRadius: '4px', background: 'none', border: 'none', cursor: 'pointer' }}
                                             >
                                                 <ExternalLink size={16} />
