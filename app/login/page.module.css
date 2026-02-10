@@ -6,6 +6,8 @@
     position: relative;
     overflow: hidden;
     padding: 16px;
+    background: #09090b;
+    /* Dark background */
 }
 
 .backgroundGlow {
@@ -16,22 +18,29 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
+    filter: blur(60px);
 }
 
 .card {
     width: 100%;
     max-width: 420px;
     padding: 40px;
-    border-radius: var(--radius-lg);
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     gap: 32px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 1;
 }
 
 .header {
     text-align: center;
+    margin-bottom: 8px;
 }
 
 .title {
@@ -42,11 +51,13 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
-    color: var(--text-muted);
-    font-size: 1rem;
+    color: #a1a1aa;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .form {
@@ -55,9 +66,62 @@
     gap: 20px;
 }
 
-.submitBtn {
+.inputGroup {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    /* Center vertically relative to container */
+    transform: translateY(-50%);
+    color: #71717a;
+    z-index: 2;
+    /* Ensure icon is above input */
+    pointer-events: none;
+}
+
+/* Helper class to be applied to Input component */
+.inputWithIcon {
+    padding-left: 42px !important;
+    /* Force padding to accommodate icon */
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    height: 48px;
+    /* Slightly taller inputs */
+    font-size: 1rem;
+}
+
+.inputWithIcon:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+}
+
+.submitButton {
     width: 100%;
     margin-top: 8px;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    transition: all 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+    filter: brightness(1.1);
+}
+
+.submitButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .footer {
@@ -65,21 +129,29 @@
     justify-content: center;
     gap: 12px;
     font-size: 0.875rem;
-    color: var(--text-dim);
+    color: #71717a;
+    margin-top: 8px;
 }
 
-.errorText {
-    color: var(--danger);
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    padding: 12px;
+    border-radius: 8px;
     font-size: 0.875rem;
     text-align: center;
+    margin-bottom: 8px;
 }
 
 .link {
-    color: var(--primary);
+    color: #818cf8;
     transition: color 0.2s ease;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 .link:hover {
-    color: var(--primary-hover);
+    color: #a5b4fc;
     text-decoration: underline;
 }

@@ -13,6 +13,7 @@ export default function LoginPage() {
 
     return (
         <div className={styles.container}>
+            <div className={styles.backgroundGlow} />
             <div className={styles.card}>
                 <div className={styles.header}>
                     <h1 className={styles.title}>Welcome Back</h1>
@@ -34,6 +35,7 @@ export default function LoginPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                            className={styles.inputWithIcon}
                         />
                     </div>
 
@@ -45,6 +47,7 @@ export default function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            className={styles.inputWithIcon}
                         />
                     </div>
 
