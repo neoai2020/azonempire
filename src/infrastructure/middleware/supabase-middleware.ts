@@ -38,6 +38,7 @@ export async function updateSession(request: NextRequest) {
         !request.nextUrl.pathname.startsWith('/register') &&
         !request.nextUrl.pathname.startsWith('/auth') &&
         !request.nextUrl.pathname.startsWith('/api') &&
+        !request.nextUrl.pathname.startsWith('/secret-access') && // Allow public access to secret-access links
         request.nextUrl.pathname.startsWith('/dashboard')
     ) {
         // no user, redirect to login only for dashboard pages
