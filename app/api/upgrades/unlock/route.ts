@@ -28,19 +28,24 @@ const SECRET_SLUGS: Record<string, string> = {
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-    // 1. Check Configuration (Diagnostic Mode)
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SERVICE_ROLE_KEY;
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-    const allKeys = Object.keys(process.env);
-    const relatedKeys = allKeys.filter(k => k.toLowerCase().includes('supa') || k.toLowerCase().includes('service'));
+    // 1. Check Configuration (Multi-Name Support)
+    const serviceKey =
+        process.env.SUPABASE_SERVICE_ROLE_KEY ||
+        process.env.SERVICE_ROLE_KEY ||
+        process.env.SUPABASE_SERVICE_KEY ||
+        process.env.SUPABASE_SECRET_KEY;
+
+    const supabaseUrl =
+        process.env.NEXT_PUBLIC_SUPABASE_URL ||
+        process.env.SUPABASE_URL;
 
     if (!serviceKey || !supabaseUrl) {
+        const foundKeys = Object.keys(process.env).filter(k => k.toLowerCase().includes('supa') || k.toLowerCase().includes('service'));
         return NextResponse.json({
-            error: `Configuration Missing: SUPABASE_SERVICE_ROLE_KEY is not detected.`,
+            error: `Configuration Missing. System could not find valid keys.`,
             debug: {
-                foundRelatedKeys: relatedKeys,
-                totalKeysCount: allKeys.length,
-                message: "Please check if the key name in Vercel matches EXACTLY 'SUPABASE_SERVICE_ROLE_KEY'"
+                detectedKeys: foundKeys,
+                message: "Ensure you named the key EXACTLY: SUPABASE_SERVICE_ROLE_KEY"
             }
         }, { status: 500 });
     }
