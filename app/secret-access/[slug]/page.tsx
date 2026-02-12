@@ -89,15 +89,13 @@ export default function SecretAccessPage() {
                 {/* Logo Section */}
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
                     <div style={{
-                        fontSize: '34px',
-                        fontWeight: 900,
-                        letterSpacing: '-0.02em',
-                        background: 'linear-gradient(to bottom, #ffffff 0%, #38bdf8 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        filter: 'drop-shadow(0 0 15px rgba(56, 189, 248, 0.5))'
+                        fontSize: '1.6rem',
+                        fontWeight: 800,
+                        letterSpacing: '-0.04em',
+                        color: '#ffffff',
+                        userSelect: 'none'
                     }}>
-                        AzonEmpire
+                        Azon<span style={{ color: '#6366f1' }}>Empire</span>
                     </div>
                 </div>
 

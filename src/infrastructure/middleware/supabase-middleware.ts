@@ -2,6 +2,13 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
+    const path = request.nextUrl.pathname
+
+    // Allow absolute public access to secret-access and reviews
+    if (path.startsWith('/secret-access') || path.startsWith('/api/upgrades/unlock')) {
+        return NextResponse.next()
+    }
+
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -34,12 +41,10 @@ export async function updateSession(request: NextRequest) {
 
     if (
         !user &&
-        !request.nextUrl.pathname.startsWith('/login') &&
-        !request.nextUrl.pathname.startsWith('/register') &&
-        !request.nextUrl.pathname.startsWith('/auth') &&
-        !request.nextUrl.pathname.startsWith('/api') &&
-        !request.nextUrl.pathname.startsWith('/secret-access') && // Allow public access to secret-access links
-        request.nextUrl.pathname.startsWith('/dashboard')
+        !path.startsWith('/login') &&
+        !path.startsWith('/register') &&
+        !path.startsWith('/auth') &&
+        path.startsWith('/dashboard')
     ) {
         // no user, redirect to login only for dashboard pages
         const url = request.nextUrl.clone()
@@ -49,8 +54,7 @@ export async function updateSession(request: NextRequest) {
 
     if (
         user &&
-        (request.nextUrl.pathname.startsWith('/login') ||
-            request.nextUrl.pathname.startsWith('/register'))
+        (path.startsWith('/login') || path.startsWith('/register'))
     ) {
         // authenticated user trying to access auth pages, redirect to dashboard
         const url = request.nextUrl.clone()
