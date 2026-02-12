@@ -25,16 +25,19 @@ const SECRET_SLUGS: Record<string, string> = {
     'conversion-master-key-77v3p9': 'upgrade_conversion',
 };
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
-    // 1. Check Configuration
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    // 1. Check Configuration (Multi-variation check)
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SERVICE_ROLE_KEY;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
 
     if (!serviceKey || !supabaseUrl) {
         const missing = !serviceKey ? 'SUPABASE_SERVICE_ROLE_KEY' : 'NEXT_PUBLIC_SUPABASE_URL';
-        console.error(`CRITICAL: Missing ${missing} in Environment Variables`);
+        // Server-side Log
+        console.error(`CONFIG_ERROR: ${missing} not found. Keys found:`, Object.keys(process.env).filter(k => k.includes('SUPABASE')));
         return NextResponse.json({
-            error: `Configuration Missing: ${missing} is not set or empty in the server environment.`
+            error: `Configuration Missing: ${missing} is not detected by the server. Please Re-deploy on Vercel.`
         }, { status: 500 });
     }
 
