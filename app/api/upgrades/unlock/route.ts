@@ -26,6 +26,14 @@ const SECRET_SLUGS: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
+    // 1. Check Configuration
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        console.error('CRITICAL: Missing Supabase Configuration in Environment Variables');
+        return NextResponse.json({
+            error: 'System configuration missing. Please check your environment variables.'
+        }, { status: 500 });
+    }
+
     try {
         const body = await request.json().catch(() => null);
 
