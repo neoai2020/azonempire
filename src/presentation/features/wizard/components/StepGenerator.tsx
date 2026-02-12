@@ -15,7 +15,6 @@ export const StepGenerator = () => {
 
     const generateAIContent = async () => {
         if (!data.selectedProduct) {
-            console.warn('No product selected, using local template');
             const localContent = LocalContentGenerator.generate({ title: 'New Asset' } as any);
             updateData({ generatedContent: localContent });
             setGenerating(false);
@@ -24,30 +23,12 @@ export const StepGenerator = () => {
 
         setGenerating(true);
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // Super fast 8s timeout for production
 
         try {
-            const prompt = `Write a DETAILED 600-word Amazon product review for: "${data.selectedProduct?.title}". 
-            Keyword: "${data.keyword}". Tone: "${data.tone}". 
-            
-            JSON Response Format:
-            {
-                "title": "SEO Optimized Title",
-                "verdict": "2-3 sentence verdict",
-                "features": ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5", "Feature 6"],
-                "description": "Intro paragraph",
-                "articleBody": "Full review content (600+ words). Use \\n\\n for paragraphs."
-            }
-            
-            Article Sections:
-            1. Introduction
-            2. Performance
-            3. Design
-            4. Features
-            5. Pros/Cons
-            6. Conclusion
-
-            CRITICAL: RETURN ONLY RAW JSON. NO MARKDOWN. NO CONVERSATION.`;
+            const prompt = `Write a short 300-word Amazon review for: "${data.selectedProduct?.title}". 
+            JSON: { "title": "Title", "verdict": "Verdict", "features": ["F1", "F2"], "description": "Intro", "articleBody": "Body" }
+            STRICT: JSON ONLY.`;
 
             const response = await fetch('/api/ai/generate', {
                 method: 'POST',
@@ -58,29 +39,20 @@ export const StepGenerator = () => {
 
             clearTimeout(timeoutId);
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `Server error: ${response.status}`);
-            }
+            if (!response.ok) throw new Error('API unstable');
 
             const result = await response.json();
             let contentStr = result.result || '';
             contentStr = contentStr.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
 
-            if (!contentStr || !contentStr.startsWith('{')) {
-                throw new Error('Invalid AI response format');
-            }
+            if (!contentStr.startsWith('{')) throw new Error('Malformed AI result');
 
             const content = JSON.parse(contentStr);
             updateData({ generatedContent: content });
         } catch (error: any) {
-            console.warn('AI Generation Issue:', error.name === 'AbortError' ? 'Timeout' : error.message);
-            try {
-                const localContent = LocalContentGenerator.generate(data.selectedProduct);
-                updateData({ generatedContent: localContent });
-            } catch (fallbackError) {
-                console.error('Fallback failed:', fallbackError);
-            }
+            console.warn('AI skipping/slow, using local generator');
+            const localContent = LocalContentGenerator.generate(data.selectedProduct);
+            updateData({ generatedContent: localContent });
         } finally {
             setGenerating(false);
         }
