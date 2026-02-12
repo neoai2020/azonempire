@@ -14,10 +14,7 @@ export const StepAffiliateLink = () => {
     const [error, setError] = useState('');
 
     const handleSubmit = () => {
-        if (!link.includes('amazon')) {
-            setError('Please paste a valid Amazon link.');
-            return;
-        }
+        // Validation removed as per user request to allow any link
         updateData({ affiliateLink: link });
         nextStep();
     };
@@ -56,15 +53,15 @@ export const StepAffiliateLink = () => {
                         target="_blank"
                         style={{ fontSize: '0.85rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '4px' }}
                     >
-                        Open on Amazon to get link <LinkIcon size={12} />
+                        Browse product <LinkIcon size={12} />
                     </a>
                 </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <Input
-                    label="Affiliate Link"
-                    placeholder="https://amzn.to/..."
+                    label="Monetization Link (Affiliate, Store, etc.)"
+                    placeholder="https://..."
                     value={link}
                     onChange={(e) => {
                         setLink(e.target.value);
@@ -73,7 +70,7 @@ export const StepAffiliateLink = () => {
                     error={error}
                 />
                 <Button onClick={handleSubmit} disabled={!link}>
-                    Validate & Continue
+                    Continue
                 </Button>
             </div>
 

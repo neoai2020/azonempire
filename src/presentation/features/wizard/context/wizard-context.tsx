@@ -8,6 +8,7 @@ export interface GeneratedContent {
     verdict: string;
     features: string[];
     description: string;
+    articleBody?: string;
 }
 
 interface WizardData {

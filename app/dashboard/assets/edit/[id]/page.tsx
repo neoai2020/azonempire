@@ -108,7 +108,7 @@ export default function EditAssetPage() {
                     </div>
 
                     <div>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>Description</label>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>Description (Intro)</label>
                         <textarea
                             value={project.review_description || ''}
                             onChange={(e) => updateProjectField('review_description', e.target.value)}
@@ -119,7 +119,24 @@ export default function EditAssetPage() {
                                 border: '1px solid var(--border-input)',
                                 borderRadius: 'var(--radius-md)',
                                 color: 'white',
-                                minHeight: '200px'
+                                minHeight: '150px'
+                            }}
+                        />
+                    </div>
+
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>Article Body (Long-form SEO)</label>
+                        <textarea
+                            value={project.review_article_body || ''}
+                            onChange={(e) => updateProjectField('review_article_body', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                background: 'var(--bg-app)',
+                                border: '1px solid var(--border-input)',
+                                borderRadius: 'var(--radius-md)',
+                                color: 'white',
+                                minHeight: '400px'
                             }}
                         />
                     </div>

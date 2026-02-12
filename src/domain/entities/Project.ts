@@ -13,6 +13,7 @@ export interface Project {
     review_description?: string;
     product_image?: string;
     affiliate_link?: string;
+    review_article_body?: string;
 }
 
 export interface DashboardStats {

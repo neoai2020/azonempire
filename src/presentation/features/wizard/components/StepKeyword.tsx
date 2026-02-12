@@ -13,7 +13,23 @@ export const StepKeyword = () => {
     const [input, setInput] = useState(data.keyword);
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(false);
     const [error, setError] = useState('');
+
+    React.useEffect(() => {
+        const fetchInitialSuggestions = async () => {
+            setInitialLoading(true);
+            try {
+                const results = await getKeywordSuggestions('');
+                setSuggestions(results);
+            } catch (err: any) {
+                console.error('Failed to fetch initial suggestions:', err);
+            } finally {
+                setInitialLoading(false);
+            }
+        };
+        fetchInitialSuggestions();
+    }, []);
 
     const handleSearch = async () => {
         if (!input.trim()) return;
@@ -36,6 +52,15 @@ export const StepKeyword = () => {
         nextStep();
     };
 
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleDirectSearch = () => {
+        const val = inputRef.current?.value || input;
+        if (val.trim()) {
+            handleSelect(val);
+        }
+    };
+
     return (
         <div className={styles.stepContainer}>
             <div className={styles.header}>
@@ -44,15 +69,18 @@ export const StepKeyword = () => {
             </div>
 
             <div className={styles.searchBox}>
-                <Input
-                    placeholder="e.g. Wireless Earbuds"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                />
-                <Button onClick={handleSearch} isLoading={loading}>
+                <div style={{ flex: 1 }}>
+                    <Input
+                        ref={inputRef}
+                        placeholder="e.g. Wireless Earbuds"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleDirectSearch()}
+                    />
+                </div>
+                <Button onClick={handleDirectSearch} isLoading={loading} style={{ height: '46px' }}>
                     <Search size={18} />
-                    Find Ideas
+                    Search Products
                 </Button>
             </div>
 
@@ -73,12 +101,18 @@ export const StepKeyword = () => {
                 </div>
             )}
 
+            {initialLoading && (
+                <div style={{ marginTop: '20px', textAlign: 'center', opacity: 0.7 }}>
+                    Loading hot niches...
+                </div>
+            )}
+
             {suggestions.length > 0 && (
                 <div className={styles.suggestions}>
-                    <h3>Suggested Keywords</h3>
+                    <h3>{!input ? '🔥 Hot right now' : 'Suggested Keywords'}</h3>
                     <div className={styles.chips}>
-                        {suggestions.map((s) => (
-                            <button key={s} className={styles.chip} onClick={() => handleSelect(s)}>
+                        {suggestions.map((s, idx) => (
+                            <button key={`${s}-${idx}`} className={styles.chip} onClick={() => handleSelect(s)}>
                                 {s}
                             </button>
                         ))}
@@ -86,10 +120,9 @@ export const StepKeyword = () => {
                 </div>
             )}
 
-            {suggestions.length === 0 && !loading && !error && input && (
-                <div className={styles.directAction}>
-                    <p>Or proceed directly with "{input}"</p>
-                    <Button variant="outline" onClick={() => handleSelect(input)}>Use "{input}"</Button>
+            {!loading && !initialLoading && !error && (
+                <div className={styles.directAction} style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '24px' }}>
+                    <p>Ready to see results? Click <strong>Search Products</strong> to find items on Amazon.</p>
                 </div>
             )}
         </div>

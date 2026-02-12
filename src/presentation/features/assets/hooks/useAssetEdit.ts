@@ -54,6 +54,7 @@ export const useAssetEdit = (id: string) => {
                     review_title: project.review_title,
                     review_verdict: project.review_verdict,
                     review_description: project.review_description,
+                    review_article_body: project.review_article_body,
                     review_features: project.review_features,
                     last_updated: new Date().toISOString()
                 })

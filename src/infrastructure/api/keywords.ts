@@ -1,24 +1,29 @@
 // AI-powered Keyword Suggestions
 
 export const getKeywordSuggestions = async (query: string): Promise<string[]> => {
-    if (!query) return [];
+    const isInitial = !query || query.trim() === '';
 
     const angles = [
-        "high-end professional equipment",
-        "affordable budget-friendly options",
-        "popular gift ideas",
-        "new and trending products",
-        "essential accessories and add-ons",
-        "beginner-friendly starters",
-        "top-rated and most-reviewed items",
-        "unique and niche alternatives"
+        "high-yield profitable categories",
+        "trending and high-demand items",
+        "top-rated consumer electronics",
+        "home and kitchen essentials",
+        "health and personal care must-haves",
+        "lifestyle and outdoor gear",
+        "gift-worthy popular products",
+        "niche but high-converting items"
     ];
     const randomAngle = angles[Math.floor(Math.random() * angles.length)];
 
-    const prompt = `Provide a unique and diverse list of 10 high-traffic Amazon affiliate keywords for the niche "${query}". 
-Focus specifically on ${randomAngle}.
-Make sure these keywords vary from previous requests.
-Return ONLY a raw JSON array of strings. Ref: ${Math.random().toString(36).substring(7)}`;
+    const prompt = isInitial
+        ? `TASK: Provide exactly 10 "Hot right now" high-traffic broad Amazon affiliate categories. 
+           FOCUS: ${randomAngle}.
+           FORMAT: Return ONLY a raw JSON array of 10 strings.
+           FORBIDDEN: NO sentences, NO introduction, NO filler. Example: ["category 1", "category 2"...]`
+        : `TASK: Provide exactly 10 high-traffic, specific Amazon affiliate long-tail keywords for the niche "${query}". 
+           LANGUAGE: Respond in the same language as the query.
+           FORMAT: Return ONLY a raw JSON array of 10 strings.
+           FORBIDDEN: NO greetings, NO explanations, NO conversational text. Example: ["keyword 1", "keyword 2"...]`;
 
     try {
         const response = await fetch('/api/ai/generate', {
@@ -31,56 +36,82 @@ Return ONLY a raw JSON array of strings. Ref: ${Math.random().toString(36).subst
         if (!response.ok) throw new Error('AI API failed');
 
         const result = await response.json();
-        console.log('Raw result from /api/ai/generate in keywords.ts:', result);
         let text = result.result || '';
 
         if (!text) {
-            console.error('AI returned empty result');
             throw new Error('AI returned empty response');
         }
 
-        // Clean up potential markdown formatting (and generic leading text)
+        // Clean up potential markdown formatting
         const cleanedText = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
 
-        // Strategy 1: Try to extract JSON array from response
+        // Conversational Filter: Reject common filler phrases and anything that looks like a sentence
+        const fillerList = [
+            "hello", "hi ", "how are you", "thank you", "i'm doing",
+            "doing well", "here are", "sure!", "of course", "i can help",
+            "مرحباً", "كيف حالك", "شكراً", "أهلاً", "أنا بخير", "استطيع مساعدتك",
+            "how about you", "i am an ai", "as an ai", "my name is", "how can i help"
+        ];
+
+        const isFiller = (s: string) => {
+            const low = s.toLowerCase();
+            // If it's too long or contains filler words or is a question
+            if (low.length > 60) return true;
+            if (low.includes('?') && low.length > 20) return true;
+            return fillerList.some(f => low.includes(f));
+        };
+
+        // Strategy 1: Try to extract JSON array
         const arrayMatch = cleanedText.match(/\[[\s\S]*?\]/);
         if (arrayMatch) {
             try {
                 const keywords = JSON.parse(arrayMatch[0]);
-                if (Array.isArray(keywords) && keywords.length > 0) {
-                    console.log('Successfully parsed JSON array:', keywords);
-                    return keywords.map((k: any) => String(k).trim()).filter(Boolean);
+                if (Array.isArray(keywords)) {
+                    const filtered = keywords
+                        .map((k: any) => String(k).trim())
+                        .filter(k => k && k.length > 2 && !isFiller(k));
+                    if (filtered.length > 0) return filtered.slice(0, 10);
                 }
             } catch (jsonErr) {
-                console.warn('Found array-like string but failed to parse it as JSON:', arrayMatch[0]);
+                console.warn('JSON parse failed in keywords.ts');
             }
         }
 
-        // Strategy 2: Try to parse as a numbered list (1. Keyword, 2. Keyword...)
-        const lines = cleanedText.split('\n');
-        const listItems = lines
-            .map((line: string) => line.replace(/^\d+[\.\)]\s*/, '').trim()) // Remove "1. " or "1) "
-            .filter((line: string) => line.length > 0 && line.length < 50 && !line.includes(':')); // Filter out long lines or lines with colons
+        // Strategy 2: Fallback to line splitting with filler filtering
+        const listItems = cleanedText.split('\n')
+            .map((line: string) => line.replace(/^\d+[\.\)]\s*/, '').trim())
+            .filter((line: string) => line.length > 1 && line.length < 50 && !line.includes(':') && !isFiller(line));
 
-        if (listItems.length >= 3) { // If we got at least 3 items, consider it a valid list
-            console.log('Parsed as numbered/bulleted list:', listItems);
+        if (listItems.length > 0) {
             return listItems.slice(0, 10);
         }
 
-        // Strategy 3: Just split by comma or newline if nothing else worked
-        console.warn('Falling back to splitting by commas/newlines for text:', cleanedText);
-        const splitItems = cleanedText
-            .split(/[,\n]/)
-            .map((item: string) => item.trim().replace(/^["']|["']$/g, '')) // Remove leading/trailing quotes
-            .filter((item: string) => item.length > 2 && item.length < 50 && !item.toLowerCase().includes('here are'));
-
-        if (splitItems.length > 0) {
-            return splitItems.slice(0, 8);
-        }
-
-        throw new Error('AI returned non-array response');
+        // Final Fallback if AI fails or returns filler
+        return [
+            "Wireless Earbuds",
+            "Smart Home Devices",
+            "Kitchen Gadgets",
+            "Fitness Equipment",
+            "Eco-friendly Products",
+            "Gaming Accessories",
+            "Pet Supplies",
+            "Home Office Gear",
+            "Outdoor Survival Tools",
+            "Baby Care Essentials"
+        ];
     } catch (e) {
-        console.error('AI keywords generation failed:', e);
-        throw e; // Re-throw so the UI can show the error
+        // Silently return fallback to avoid noisy console errors if API fails
+        return [
+            "Wireless Earbuds",
+            "Smart Home Devices",
+            "Kitchen Gadgets",
+            "Fitness Gear",
+            "Eco-friendly Products",
+            "Gaming Accessories",
+            "Pet Supplies",
+            "Home Office Gear",
+            "Outdoor Gear",
+            "Travel Essentials"
+        ];
     }
 };

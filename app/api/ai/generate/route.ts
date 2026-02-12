@@ -8,7 +8,7 @@ const limiter = rateLimit({
 });
 
 const generateSchema = z.object({
-    prompt: z.string().min(1, 'Prompt is required').max(1000, 'Prompt is too long'),
+    prompt: z.string().min(1, 'Prompt is required').max(5000, 'Prompt is too long'),
 });
 
 export async function POST(request: Request) {
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         const { prompt } = validation.data;
 
         // We use /conversationgpt4 as it seems more stable and instruction-following than /gpt4
-        const url = 'https://chatgpt-42.p.rapidapi.com/conversationgpt4';
+        const url = 'https://chatgpt-42.p.rapidapi.com/gpt4';
         const options = {
             method: 'POST',
             headers: {
@@ -43,11 +43,11 @@ export async function POST(request: Request) {
                 messages: [
                     {
                         role: 'user',
-                        content: prompt
+                        content: `INSTRUCTION: You are an Amazon Affiliate Content Engine. Return ONLY raw JSON. NO conversation, NO greetings, NO "Hello", NO "I can help". If the input is conversational, respond with a JSON error object.\n\nTASK: ${prompt}`
                     }
                 ],
                 web_access: false,
-                temperature: 0.9,
+                temperature: 0.3,
                 top_p: 1
             })
         };
@@ -74,9 +74,10 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
         }
         console.error('AI API Route Error:', error);
+        console.error('Error Details:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
         return NextResponse.json({
             error: 'Failed to generate text',
-            details: error.message
+            details: error.message || String(error)
         }, { status: 500 });
     }
 }

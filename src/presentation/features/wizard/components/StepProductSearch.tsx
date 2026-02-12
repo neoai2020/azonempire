@@ -42,8 +42,8 @@ export const StepProductSearch = () => {
                 </div>
             ) : (
                 <div className={styles.productGrid}>
-                    {products.map((product) => (
-                        <div key={product.asin} className={styles.productCard}>
+                    {products.map((product, index) => (
+                        <div key={`${product.asin || 'prod'}-${index}`} className={styles.productCard}>
 
                             // ... (inside component)
                             <div className={styles.productImage} style={{ position: 'relative', height: '200px' }}>

@@ -52,6 +52,7 @@ export const StepDeploy = () => {
                         review_verdict: data.generatedContent?.verdict || '',
                         review_features: data.generatedContent?.features || [],
                         review_description: data.generatedContent?.description || '',
+                        review_article_body: data.generatedContent?.articleBody || '',
                         product_image: data.selectedProduct?.image || '',
                         affiliate_link: data.affiliateLink || ''
                     });
