@@ -11,8 +11,8 @@ const generateSchema = z.object({
     prompt: z.string().min(1, 'Prompt is required').max(5000, 'Prompt is too long'),
 });
 
-// Set max duration for Vercel functions (Pro/Enterprise can go higher, Hobby is 10s)
-export const maxDuration = 30;
+// Set max duration for Vercel functions (Up to 60s for deep content generation)
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
     if (!process.env.RAPIDAPI_KEY) {

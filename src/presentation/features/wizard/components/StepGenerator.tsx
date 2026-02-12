@@ -23,12 +23,23 @@ export const StepGenerator = () => {
 
         setGenerating(true);
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // Super fast 8s timeout for production
+        const timeoutId = setTimeout(() => controller.abort(), 50000); // 50s for 1500 words
 
         try {
-            const prompt = `Write a short 300-word Amazon review for: "${data.selectedProduct?.title}". 
-            JSON: { "title": "Title", "verdict": "Verdict", "features": ["F1", "F2"], "description": "Intro", "articleBody": "Body" }
-            STRICT: JSON ONLY.`;
+            const prompt = `Write a DETAILED 1500-word Amazon product review for: "${data.selectedProduct?.title}". 
+            Keyword: "${data.keyword}". Tone: "${data.tone}". 
+            
+            JSON Response Format:
+            {
+                "title": "SEO Optimized Title",
+                "verdict": "2-3 sentence verdict",
+                "features": ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5", "Feature 6"],
+                "description": "Intro paragraph",
+                "articleBody": "Full review content (1200+ words). Use \\n\\n for paragraphs."
+            }
+            
+            Sections: Introduction, Why This Product, Features, Performance, Design, Conclusion.
+            CRITICAL: RETURN ONLY RAW JSON.`;
 
             const response = await fetch('/api/ai/generate', {
                 method: 'POST',
@@ -50,7 +61,7 @@ export const StepGenerator = () => {
             const content = JSON.parse(contentStr);
             updateData({ generatedContent: content });
         } catch (error: any) {
-            console.warn('AI skipping/slow, using local generator');
+            console.warn('AI Issues, using local backup');
             const localContent = LocalContentGenerator.generate(data.selectedProduct);
             updateData({ generatedContent: localContent });
         } finally {
@@ -68,29 +79,7 @@ export const StepGenerator = () => {
             <div className={styles.stepContainer} style={{ alignItems: 'center', justifyContent: 'center', height: '400px', textAlign: 'center' }}>
                 <div className={styles.loader} style={{ width: '48px', height: '48px', borderWidth: '4px' }} />
                 <h3 style={{ marginTop: '24px', fontSize: '1.25rem' }}>Constructing your asset...</h3>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>Writing copy · Optimizing SEO · Designing layout</p>
-
-                <button
-                    onClick={() => {
-                        const localContent = LocalContentGenerator.generate(data.selectedProduct!);
-                        updateData({ generatedContent: localContent });
-                        setGenerating(false);
-                    }}
-                    style={{
-                        fontSize: '12px',
-                        color: 'var(--text-muted)',
-                        background: 'rgba(255,255,255,0.05)',
-                        padding: '8px 16px',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
-                    }}
-                >
-                    <RefreshCw size={14} /> Skip to Default Review
-                </button>
+                <p style={{ color: 'var(--text-muted)' }}>Writing detailed 1500-word analysis · Optimizing SEO · Designing layout</p>
             </div>
         );
     }
