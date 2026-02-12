@@ -28,16 +28,20 @@ const SECRET_SLUGS: Record<string, string> = {
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-    // 1. Check Configuration (Multi-variation check)
+    // 1. Check Configuration (Diagnostic Mode)
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SERVICE_ROLE_KEY;
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+    const allKeys = Object.keys(process.env);
+    const relatedKeys = allKeys.filter(k => k.toLowerCase().includes('supa') || k.toLowerCase().includes('service'));
 
     if (!serviceKey || !supabaseUrl) {
-        const missing = !serviceKey ? 'SUPABASE_SERVICE_ROLE_KEY' : 'NEXT_PUBLIC_SUPABASE_URL';
-        // Server-side Log
-        console.error(`CONFIG_ERROR: ${missing} not found. Keys found:`, Object.keys(process.env).filter(k => k.includes('SUPABASE')));
         return NextResponse.json({
-            error: `Configuration Missing: ${missing} is not detected by the server. Please Re-deploy on Vercel.`
+            error: `Configuration Missing: SUPABASE_SERVICE_ROLE_KEY is not detected.`,
+            debug: {
+                foundRelatedKeys: relatedKeys,
+                totalKeysCount: allKeys.length,
+                message: "Please check if the key name in Vercel matches EXACTLY 'SUPABASE_SERVICE_ROLE_KEY'"
+            }
         }, { status: 500 });
     }
 
