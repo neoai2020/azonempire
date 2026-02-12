@@ -20,32 +20,32 @@ const UPGRADES_CONTENT: any = {
         cta: 'Launch 10x Profit System'
     },
     'traffic-booster': {
-        title: 'Traffic Booster',
+        title: 'Automation',
         subtitle: 'Drive consistent, hands-free visitors to your review assets.',
         icon: Rocket,
         accent: 'from-rose-400 to-pink-500',
-        badge: 'TRAFFIC ENGINE',
-        benefitsTitle: 'Traffic automation stack',
+        badge: 'AUTOMATION HUB',
+        benefitsTitle: 'Automation stack',
         features: [
             'One-Click Social Distribution',
             'SEO Auto-Optimization Engine',
             'Smart Backlink Generator'
         ],
-        cta: 'Activate Traffic Booster'
+        cta: 'Activate Automation'
     },
     'conversion-master': {
-        title: 'Conversion Master',
+        title: 'Infinite',
         subtitle: 'Turn curious visitors into buyers using proven psychology.',
         icon: Zap,
         accent: 'from-purple-400 to-violet-500',
-        badge: 'CONVERSION LAB',
+        badge: 'INFINITE ACCESS',
         benefitsTitle: 'Conversion power moves',
         features: [
             'Exit-Intent & Scarcity Playbook',
             'Dynamic Countdown & Urgency Widgets',
             'Bonus Page Templates Library'
         ],
-        cta: 'Open Conversion Master'
+        cta: 'Open Infinite'
     },
     'agency-hub': {
         title: 'Agency Hub',

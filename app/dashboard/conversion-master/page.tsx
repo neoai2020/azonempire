@@ -7,7 +7,7 @@ import { UpgradePageTemplate } from '@/src/presentation/features/dashboard/compo
 export default function ConversionMasterPage() {
     return (
         <UpgradePageTemplate
-            title="Conversion Master"
+            title="Infinite"
             description="Turn every visitor into a sale. Our psychological conversion triggers and layout optimizations designed to triple your outbound clicks."
             icon={Zap}
             accentColor="#a855f7"

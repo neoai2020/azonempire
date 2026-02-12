@@ -56,13 +56,19 @@ export default function SecretAccessPage() {
         }
     };
 
-    const prettyName =
-        (slug || 'Secret Access')
+    const getPrettyName = (slug: string) => {
+        if (slug === 'conversion-master-key-77v3p9') return 'Infinite';
+        if (slug === 'traffic-booster-vip-94j2l1') return 'Automation';
+
+        return (slug || 'Secret Access')
             .split('-')
             .filter(word => !['unlock', 'access', 'secret', 'key'].includes(word.toLowerCase()))
             .filter(word => !/^[0-9a-z]{6,7}$/.test(word))
             .map((word) => word.toUpperCase())
             .join(' ');
+    }
+
+    const prettyName = getPrettyName(slug);
 
     return (
         <div style={{

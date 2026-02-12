@@ -19,8 +19,8 @@ const NAV_ITEMS = [
 const UPGRADE_ITEMS = [
     { id: 'upgrade_10x', label: '10x Profit System', icon: Crown, href: '/dashboard/vip-10x' },
     { id: 'upgrade_dfy', label: 'Done-For-You Vault', icon: Briefcase, href: '/dashboard/dfy-vault' },
-    { id: 'upgrade_traffic', label: 'Traffic Booster', icon: Rocket, href: '/dashboard/traffic-pro' },
-    { id: 'upgrade_conversion', label: 'Conversion Master', icon: Zap, href: '/dashboard/conversion-master' },
+    { id: 'upgrade_traffic', label: 'Automation', icon: Rocket, href: '/dashboard/traffic-pro' },
+    { id: 'upgrade_conversion', label: 'Infinite', icon: Zap, href: '/dashboard/conversion-master' },
 ];
 
 export const Sidebar = () => {

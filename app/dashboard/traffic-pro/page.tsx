@@ -7,7 +7,7 @@ import { UpgradePageTemplate } from '@/src/presentation/features/dashboard/compo
 export default function TrafficProPage() {
     return (
         <UpgradePageTemplate
-            title="Traffic Booster PRO"
+            title="Automation"
             description="Instantly flood your assets with high-converting buyer traffic. Bypass the standard SEO wait-times and get eyes on your products TODAY."
             icon={Rocket}
             accentColor="#ec4899"
