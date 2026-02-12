@@ -43,7 +43,14 @@ export default function SecretAccessPage() {
             }, 2000);
 
         } catch (error: any) {
-            setMessage({ type: 'error', text: error.message || 'VERIFICATION FAILED. TRY AGAIN.' });
+            let errorText = error.message || 'VERIFICATION FAILED. TRY AGAIN.';
+
+            // If the error has extra debug info from our API, show it
+            if (error.debug && error.debug.message) {
+                errorText = `${error.message} (${error.debug.message})`;
+            }
+
+            setMessage({ type: 'error', text: errorText });
         } finally {
             setLoading(false);
         }
