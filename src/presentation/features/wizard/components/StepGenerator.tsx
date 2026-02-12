@@ -14,9 +14,20 @@ export const StepGenerator = () => {
     const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
 
     const generateAIContent = async () => {
+        if (!data.selectedProduct) {
+            console.warn('No product selected, using local template');
+            const localContent = LocalContentGenerator.generate({ title: 'New Asset' } as any);
+            updateData({ generatedContent: localContent });
+            setGenerating(false);
+            return;
+        }
+
         setGenerating(true);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
         try {
-            const prompt = `Write a DETAILED 1500-word Amazon product review for: "${data.selectedProduct?.title}". 
+            const prompt = `Write a DETAILED 600-word Amazon product review for: "${data.selectedProduct?.title}". 
             Keyword: "${data.keyword}". Tone: "${data.tone}". 
             
             JSON Response Format:
@@ -25,7 +36,7 @@ export const StepGenerator = () => {
                 "verdict": "2-3 sentence verdict",
                 "features": ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5", "Feature 6"],
                 "description": "Intro paragraph",
-                "articleBody": "Full review content (1000+ words). Use \\n\\n for paragraphs."
+                "articleBody": "Full review content (600+ words). Use \\n\\n for paragraphs."
             }
             
             Article Sections:
@@ -36,42 +47,40 @@ export const StepGenerator = () => {
             5. Pros/Cons
             6. Conclusion
 
-            CRITICAL: RETURN ONLY RAW JSON. NO MARKDOWN.`;
+            CRITICAL: RETURN ONLY RAW JSON. NO MARKDOWN. NO CONVERSATION.`;
 
             const response = await fetch('/api/ai/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt })
+                body: JSON.stringify({ prompt }),
+                signal: controller.signal
             });
 
-            const result = await response.json();
-            console.log('AI API Response:', result);
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
-                throw new Error(result.error || result.details || 'API request failed');
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Server error: ${response.status}`);
             }
 
+            const result = await response.json();
             let contentStr = result.result || '';
-            // Clean up AI response - remove markdown code blocks if present
             contentStr = contentStr.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
 
-
-
-            // Validate before parsing - must start with {
             if (!contentStr || !contentStr.startsWith('{')) {
-                console.error('Invalid content string detected (not JSON):', contentStr);
-                throw new Error('AI returned a conversational response or malformed data');
+                throw new Error('Invalid AI response format');
             }
 
             const content = JSON.parse(contentStr);
             updateData({ generatedContent: content });
-        } catch (error) {
-            console.warn('AI Generation failed, switching to Local Content Generator:', error);
-            // Use local smart generator if AI fails
-            const localContent = LocalContentGenerator.generate(data.selectedProduct!);
-            updateData({
-                generatedContent: localContent
-            });
+        } catch (error: any) {
+            console.warn('AI Generation Issue:', error.name === 'AbortError' ? 'Timeout' : error.message);
+            try {
+                const localContent = LocalContentGenerator.generate(data.selectedProduct);
+                updateData({ generatedContent: localContent });
+            } catch (fallbackError) {
+                console.error('Fallback failed:', fallbackError);
+            }
         } finally {
             setGenerating(false);
         }
@@ -84,10 +93,32 @@ export const StepGenerator = () => {
 
     if (generating) {
         return (
-            <div className={styles.stepContainer} style={{ alignItems: 'center', justifyContent: 'center', height: '400px' }}>
+            <div className={styles.stepContainer} style={{ alignItems: 'center', justifyContent: 'center', height: '400px', textAlign: 'center' }}>
                 <div className={styles.loader} style={{ width: '48px', height: '48px', borderWidth: '4px' }} />
                 <h3 style={{ marginTop: '24px', fontSize: '1.25rem' }}>Constructing your asset...</h3>
-                <p style={{ color: 'var(--text-muted)' }}>Writing copy · Optimizing SEO · Designing layout</p>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>Writing copy · Optimizing SEO · Designing layout</p>
+
+                <button
+                    onClick={() => {
+                        const localContent = LocalContentGenerator.generate(data.selectedProduct!);
+                        updateData({ generatedContent: localContent });
+                        setGenerating(false);
+                    }}
+                    style={{
+                        fontSize: '12px',
+                        color: 'var(--text-muted)',
+                        background: 'rgba(255,255,255,0.05)',
+                        padding: '8px 16px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                    }}
+                >
+                    <RefreshCw size={14} /> Skip to Default Review
+                </button>
             </div>
         );
     }

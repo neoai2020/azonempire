@@ -11,7 +11,17 @@ const generateSchema = z.object({
     prompt: z.string().min(1, 'Prompt is required').max(5000, 'Prompt is too long'),
 });
 
+// Set max duration for Vercel functions (Pro/Enterprise can go higher, Hobby is 10s)
+export const maxDuration = 30;
+
 export async function POST(request: Request) {
+    if (!process.env.RAPIDAPI_KEY) {
+        return NextResponse.json({
+            error: 'Missing Configuration',
+            details: 'The RAPIDAPI_KEY is not set in the server environment variables.'
+        }, { status: 500 });
+    }
+
     try {
         // Rate Limiting
         const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
