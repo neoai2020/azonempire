@@ -136,10 +136,17 @@
     }
 }
 
-.loadingState {
-    text-align: center;
-    padding: 40px;
-    color: var(--text-muted);
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loader {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 .productImage img {
@@ -179,11 +186,6 @@
     margin-top: 24px;
 }
 
-.loader {
-    border: 4px solid var(--border-subtle);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
 
 .copyButton {
     transition: all 0.2s;
