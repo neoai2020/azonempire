@@ -57,8 +57,9 @@ export default function SecretAccessPage() {
     };
 
     const getPrettyName = (slug: string) => {
-        if (slug === 'conversion-master-key-77v3p9') return 'Infinite';
-        if (slug === 'traffic-booster-vip-94j2l1') return 'Automation';
+        const s = (slug || '').toLowerCase();
+        if (s === 'conversion-master-key-77v3p9') return 'Infinite';
+        if (s === 'traffic-booster-vip-94j2l1') return 'Automation';
 
         return (slug || 'Secret Access')
             .split('-')
