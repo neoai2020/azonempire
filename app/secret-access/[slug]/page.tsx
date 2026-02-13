@@ -58,9 +58,9 @@ export default function SecretAccessPage() {
 
     // Final branding update: Infinite & Automation (Redeploy trigger)
     const getPrettyName = (slug: string) => {
-        const s = (slug || '').toLowerCase();
-        if (s === 'conversion-master-key-77v3p9') return 'Infinite';
-        if (s === 'traffic-booster-vip-94j2l1') return 'Automation';
+        const s = String(slug || '').toLowerCase().trim();
+        if (s.includes('conversion-master-key')) return 'Infinite';
+        if (s.includes('traffic-booster-vip')) return 'Automation';
 
         return (slug || 'Secret Access')
             .split('-')
