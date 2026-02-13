@@ -23,6 +23,7 @@ const UPGRADE_ITEMS = [
     { id: 'upgrade_traffic', label: 'Automation', icon: Rocket, href: '/dashboard/traffic-pro' },
     { id: 'upgrade_conversion', label: 'Infinite', icon: Zap, href: '/dashboard/conversion-master' },
 ];
+// Local Version: 1.1.0-SyncCheck
 
 export const Sidebar = () => {
     const pathname = usePathname();
