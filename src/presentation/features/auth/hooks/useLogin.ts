@@ -25,7 +25,9 @@ export const useLogin = () => {
             router.push('/dashboard');
         } catch (err: any) {
             console.error('Login error:', err);
-            setError(err.message || 'Failed to login');
+            setError(err.message === 'Invalid login credentials'
+                ? 'Invalid email or password. Do you have an account yet?'
+                : (err.message || 'Failed to login'));
         } finally {
             setLoading(false);
         }
