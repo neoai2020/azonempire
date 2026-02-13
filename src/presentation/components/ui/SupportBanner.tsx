@@ -20,12 +20,13 @@ export default function SupportBanner() {
                 </div>
             </div>
 
-            <button
+            <a
+                href="mailto:AzonempireAI@neoai.freshdesk.com"
                 className={styles.actionButton}
-                onClick={() => window.open('https://support.example.com', '_blank')}
+                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
             >
                 Contact Support
-            </button>
+            </a>
         </div>
     );
 }
