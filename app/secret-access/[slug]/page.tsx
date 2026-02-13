@@ -56,6 +56,7 @@ export default function SecretAccessPage() {
         }
     };
 
+    // Final branding update: Infinite & Automation (Redeploy trigger)
     const getPrettyName = (slug: string) => {
         const s = (slug || '').toLowerCase();
         if (s === 'conversion-master-key-77v3p9') return 'Infinite';

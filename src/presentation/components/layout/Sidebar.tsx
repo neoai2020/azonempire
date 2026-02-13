@@ -16,6 +16,7 @@ const NAV_ITEMS = [
     { label: 'Academy', icon: GraduationCap, href: '/dashboard/academy' },
 ];
 
+// Final branding update: Infinite & Automation (Redeploy trigger)
 const UPGRADE_ITEMS = [
     { id: 'upgrade_10x', label: '10x Profit System', icon: Crown, href: '/dashboard/vip-10x' },
     { id: 'upgrade_dfy', label: 'Done-For-You Vault', icon: Briefcase, href: '/dashboard/dfy-vault' },
