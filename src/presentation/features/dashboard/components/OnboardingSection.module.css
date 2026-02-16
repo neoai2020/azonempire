@@ -1,0 +1,147 @@
+.container {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(19, 19, 22, 0.5) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text-main);
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.progressBadge {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.zapIcon {
+    fill: var(--primary);
+}
+
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.stepCard {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+    color: inherit;
+}
+
+.stepCard:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+.stepIconWrapper {
+    width: 48px;
+    height: 48px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.stepContent {
+    flex: 1;
+}
+
+.stepTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-main);
+}
+
+.stepDescription {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.stepCta {
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.stepCard:hover .stepCta {
+    transform: translateX(4px);
+    color: var(--primary-light, #818cf8);
+}
+
+.checkWrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.pendingIcon {
+    color: rgba(255, 255, 255, 0.1);
+}
+
+.completedIcon {
+    color: var(--success);
+}
+
+@media (max-width: 640px) {
+    .header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .stepsGrid {
+        grid-template-columns: 1fr;
+    }
+}

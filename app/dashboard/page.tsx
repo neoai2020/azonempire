@@ -1,13 +1,47 @@
 'use client';
 
 import React from 'react';
-import { VideoCard } from '@/src/presentation/features/dashboard/components/VideoCard';
+import { OnboardingSection } from '@/src/presentation/features/dashboard/components/OnboardingSection';
 import { StatTile } from '@/src/presentation/features/dashboard/components/StatTile';
 import { useDashboardStats } from '@/src/presentation/features/dashboard/hooks/useDashboardStats';
-import { MousePointerClick, Eye, Layers, TrendingUp } from 'lucide-react';
+import { MousePointerClick, Eye, Layers, TrendingUp, Rocket, GraduationCap, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
+    const router = useRouter();
     const { projects, stats, loading, error } = useDashboardStats();
+
+    const onboardingSteps = [
+        {
+            id: 1,
+            title: 'Create Your First Asset',
+            description: 'Use our AI Wizard to find products and generate high-converting content.',
+            icon: Rocket,
+            action: () => router.push('/dashboard/wizard'),
+            completed: projects.length > 0,
+            cta: projects.length > 0 ? 'Create Another' : 'Start Wizard'
+        },
+        {
+            id: 2,
+            title: 'Learn the System',
+            description: 'Master the AzonEmpire strategies to maximize your affiliate commissions.',
+            icon: GraduationCap,
+            action: () => router.push('/dashboard/academy'),
+            completed: false, // Could be linked to a 'training_completed' flag in user metadata later
+            cta: 'Explore Academy'
+        },
+        {
+            id: 3,
+            title: 'Boost Your Assets',
+            description: 'Generate AI marketing content to drive massive traffic to your reviews.',
+            icon: Sparkles,
+            action: () => router.push('/dashboard/boost'),
+            completed: false,
+            cta: 'Boost Now'
+        }
+    ];
+
+    const completedCount = onboardingSteps.filter(s => s.completed).length;
 
     if (loading) {
         return <div style={{ padding: '40px', textAlign: 'center' }}>Loading your empire...</div>;
@@ -19,9 +53,13 @@ export default function DashboardPage() {
 
     return (
         <div>
-            <VideoCard />
+            <OnboardingSection
+                steps={onboardingSteps}
+                completedCount={completedCount}
+                totalCount={3}
+            />
 
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Performance Overview</h3>
+            <h3 id="performance-overview" style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Performance Overview</h3>
 
             <div style={{
                 display: 'grid',
@@ -57,7 +95,7 @@ export default function DashboardPage() {
                 />
             </div>
 
-            <div style={{
+            <div id="recent-assets" style={{
                 background: 'var(--bg-surface)',
                 borderRadius: 'var(--radius-lg)',
                 border: '1px solid var(--border-subtle)',
