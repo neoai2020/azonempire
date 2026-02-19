@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { OnboardingSection } from '@/src/presentation/features/dashboard/components/OnboardingSection';
+
 import { BookOpen, Target, DollarSign, Search, PenTool, BarChart3, PlayCircle, Clock } from 'lucide-react';
 
 const CATEGORIES = [
@@ -31,18 +31,7 @@ export default function AcademyPage() {
     const [activeCategory, setActiveCategory] = useState('foundations');
     const [playingVideo, setPlayingVideo] = useState<null | Video>(null);
 
-    const trainingSteps = CATEGORIES.map((cat, index) => ({
-        id: index + 1,
-        title: cat.title,
-        description: `Master ${cat.title} strategies to grow your empire.`,
-        icon: cat.icon,
-        action: () => {
-            setActiveCategory(cat.id);
-            setPlayingVideo(null); // Reset player when changing category
-        },
-        completed: false,
-        cta: activeCategory === cat.id ? 'Viewing' : 'View Module'
-    }));
+
 
     const filteredVideos = ALL_VIDEOS.filter(v => v.cat === activeCategory);
 
@@ -55,13 +44,7 @@ export default function AcademyPage() {
                 </p>
             </div>
 
-            <OnboardingSection
-                title="Your Learning Path"
-                subtitle="Select a module to view the training videos."
-                steps={trainingSteps}
-                completedCount={0}
-                totalCount={6}
-            />
+
 
             <div style={{ marginTop: '48px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>

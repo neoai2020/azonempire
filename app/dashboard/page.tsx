@@ -1,11 +1,13 @@
 'use client';
 
 import React from 'react';
-import { OnboardingSection } from '@/src/presentation/features/dashboard/components/OnboardingSection';
+
 import { StatTile } from '@/src/presentation/features/dashboard/components/StatTile';
 import { useDashboardStats } from '@/src/presentation/features/dashboard/hooks/useDashboardStats';
 import { MousePointerClick, Eye, Layers, TrendingUp, Rocket, GraduationCap, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+import { OnboardingTour } from '@/src/components/OnboardingTour';
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -53,11 +55,8 @@ export default function DashboardPage() {
 
     return (
         <div>
-            <OnboardingSection
-                steps={onboardingSteps}
-                completedCount={completedCount}
-                totalCount={3}
-            />
+            <OnboardingTour />
+
 
             <h3 id="performance-overview" style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Performance Overview</h3>
 

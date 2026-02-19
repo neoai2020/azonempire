@@ -29,7 +29,7 @@ export const OnboardingSection = ({
     totalCount
 }: OnboardingSectionProps) => {
     return (
-        <div className={styles.container}>
+        <div id="onboarding-section" className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.headerContent}>
                     <h2 className={styles.title}>{title}</h2>
@@ -47,7 +47,6 @@ export const OnboardingSection = ({
                         key={step.id}
                         className={styles.stepCard}
                         onClick={(e) => {
-                            console.log('Onboarding step clicked:', step.title);
                             step.action();
                         }}
                         type="button"

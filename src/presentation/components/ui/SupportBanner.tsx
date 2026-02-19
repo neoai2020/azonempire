@@ -6,7 +6,7 @@ import styles from './SupportBanner.module.css';
 
 export default function SupportBanner() {
     return (
-        <div className={styles.bannerContainer}>
+        <div id="support-banner" className={styles.bannerContainer}>
             <div className={styles.contentWrapper}>
                 <div className={styles.iconCircle}>
                     <Headset size={28} strokeWidth={1.5} />

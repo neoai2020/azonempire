@@ -193,3 +193,72 @@ button {
 .animate-in.zoom-in-95 {
   animation: zoomIn 0.3s ease-out forwards;
 }
+
+/* Driver.js Custom Theme */
+.driver-popover.driver-popover-theme {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+.driver-popover.driver-popover-theme .driver-popover-title {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.driver-popover.driver-popover-theme .driver-popover-description {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.driver-popover.driver-popover-theme button {
+  background-color: var(--bg-surface-hover);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  text-shadow: none;
+}
+
+.driver-popover.driver-popover-theme button:hover {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.driver-popover.driver-popover-theme .driver-popover-navigation-btns {
+  gap: 8px;
+}
+
+.driver-popover.driver-popover-theme .driver-popover-close-btn {
+  color: var(--text-muted);
+}
+
+.driver-popover.driver-popover-theme .driver-popover-close-btn:hover {
+  color: var(--text-main);
+}
+
+.driver-popover.driver-popover-theme .driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: var(--bg-surface);
+}
+
+.driver-popover.driver-popover-theme .driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: var(--bg-surface);
+}
+
+.driver-popover.driver-popover-theme .driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: var(--bg-surface);
+}
+
+.driver-popover.driver-popover-theme .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: var(--bg-surface);
+}
