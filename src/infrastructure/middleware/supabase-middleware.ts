@@ -54,9 +54,11 @@ export async function updateSession(request: NextRequest) {
 
     if (
         user &&
-        (path.startsWith('/login') || path.startsWith('/register'))
+        (path.startsWith('/login') ||
+            path.startsWith('/register') ||
+            path.startsWith('/forgot-password'))
     ) {
-        // authenticated user trying to access auth pages, redirect to dashboard
+        // Keep /reset-password reachable while user holds a recovery session from verifyOtp
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard'
         return NextResponse.redirect(url)

@@ -51,13 +51,19 @@ export default function LoginPage() {
                         />
                     </div>
 
+                    <div className={styles.forgotRow}>
+                        <Link href="/forgot-password" className={styles.forgotLink}>
+                            Forgot password?
+                        </Link>
+                    </div>
+
                     <Button type="submit" className={styles.submitButton} disabled={loading}>
                         {loading ? 'Signing in...' : 'Sign In'}
                     </Button>
                 </form>
 
                 <div className={styles.footer}>
-                    <p>Don't have an account? <Link href="/register" className={styles.link}>Sign up</Link></p>
+                    <p>Don&apos;t have an account? <Link href="/register" className={styles.link}>Sign up</Link></p>
                 </div>
             </div>
         </div>
