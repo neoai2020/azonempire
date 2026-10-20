@@ -6,6 +6,13 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    noarchive: true,
+    nosnippet: true,
+    noimageindex: true,
+  },
   title: 'AzonEmpire',
   description: 'Build Amazon Affiliate Pages in Seconds',
 };
