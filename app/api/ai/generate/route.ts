@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import rateLimit from '@/src/infrastructure/lib/rate-limit';
+import { withOpenRouterFirst } from '@/src/infrastructure/lib/openrouter';
 
 const limiter = rateLimit({
     interval: 60 * 1000, // 60 seconds
@@ -40,42 +41,47 @@ export async function POST(request: Request) {
 
         const { prompt } = validation.data;
 
-        // We use /conversationgpt4 as it seems more stable and instruction-following than /gpt4
-        const url = 'https://chatgpt-42.p.rapidapi.com/gpt4';
-        const options = {
-            method: 'POST',
-            headers: {
-                'x-rapidapi-key': process.env.RAPIDAPI_KEY!,
-                'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                messages: [
-                    {
-                        role: 'user',
-                        content: `INSTRUCTION: You are an Amazon Affiliate Content Engine. Return ONLY raw JSON. NO conversation, NO greetings, NO "Hello", NO "I can help". If the input is conversational, respond with a JSON error object.\n\nTASK: ${prompt}`
-                    }
-                ],
-                web_access: false,
-                temperature: 0.3,
-                top_p: 1
-            })
-        };
+        const messages = [
+            {
+                role: 'user',
+                content: `INSTRUCTION: You are an Amazon Affiliate Content Engine. Return ONLY raw JSON. NO conversation, NO greetings, NO "Hello", NO "I can help". If the input is conversational, respond with a JSON error object.\n\nTASK: ${prompt}`
+            }
+        ];
 
-        const response = await fetch(url, {
-            ...options,
-            cache: 'no-store'
+        const result = await withOpenRouterFirst(messages, { temperature: 0.3 }, async () => {
+            // We use /conversationgpt4 as it seems more stable and instruction-following than /gpt4
+            const url = 'https://chatgpt-42.p.rapidapi.com/gpt4';
+            const options = {
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': process.env.RAPIDAPI_KEY!,
+                    'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages,
+                    web_access: false,
+                    temperature: 0.3,
+                    top_p: 1
+                })
+            };
+
+            const response = await fetch(url, {
+                ...options,
+                cache: 'no-store',
+                signal: AbortSignal.timeout(90000)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+            }
+
+            const data = await response.json();
+
+            // Ensure we always return a result field to the frontend
+            return data.result || data.message || (typeof data === 'string' ? data : JSON.stringify(data));
         });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`API request failed with status ${response.status}: ${errorText}`);
-        }
-
-        const data = await response.json();
-
-        // Ensure we always return a result field to the frontend
-        const result = data.result || data.message || (typeof data === 'string' ? data : JSON.stringify(data));
 
         return NextResponse.json({ result });
 
