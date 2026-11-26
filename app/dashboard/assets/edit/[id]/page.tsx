@@ -72,6 +72,11 @@ export default function EditAssetPage() {
                     <div>
                         <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>Affiliate Link</label>
                         <Input
+                            type="text"
+                            inputMode="url"
+                            autoCapitalize="off"
+                            autoCorrect="off"
+                            spellCheck={false}
                             value={project.affiliate_link || ''}
                             onChange={(e) => updateProjectField('affiliate_link', e.target.value)}
                             placeholder="https://amazon.com/..."

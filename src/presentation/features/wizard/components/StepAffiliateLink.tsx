@@ -6,6 +6,7 @@ import { useWizard } from '@/src/presentation/features/wizard/context/wizard-con
 import { Button } from '@/src/presentation/components/ui/Button';
 import { Input } from '@/src/presentation/components/ui/Input';
 import { LinkIcon } from 'lucide-react';
+import { isValidWebUrl, normalizeWebUrl } from '@/src/infrastructure/lib/normalize-url';
 import styles from './WizardSteps.module.css';
 
 export const StepAffiliateLink = () => {
@@ -14,8 +15,11 @@ export const StepAffiliateLink = () => {
     const [error, setError] = useState('');
 
     const handleSubmit = () => {
-        // Validation removed as per user request to allow any link
-        updateData({ affiliateLink: link });
+        if (!isValidWebUrl(link)) {
+            setError('Enter a valid link, e.g. google.com');
+            return;
+        }
+        updateData({ affiliateLink: normalizeWebUrl(link) });
         nextStep();
     };
 
@@ -62,6 +66,11 @@ export const StepAffiliateLink = () => {
                 <Input
                     label="Monetization Link (Affiliate, Store, etc.)"
                     placeholder="https://..."
+                    type="text"
+                    inputMode="url"
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    spellCheck={false}
                     value={link}
                     onChange={(e) => {
                         setLink(e.target.value);

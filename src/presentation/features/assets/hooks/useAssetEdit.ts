@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Project } from '@/src/domain/entities';
 import { supabase } from '@/src/infrastructure/lib/supabase';
+import { normalizeWebUrl } from '@/src/infrastructure/lib/normalize-url';
 
 export const useAssetEdit = (id: string) => {
     const router = useRouter();
@@ -43,6 +44,11 @@ export const useAssetEdit = (id: string) => {
 
     const handleSave = async () => {
         if (!project) return;
+        const affiliateLink = project.affiliate_link?.trim() ? normalizeWebUrl(project.affiliate_link) : project.affiliate_link;
+        if (project.affiliate_link?.trim() && !affiliateLink) {
+            alert('Enter a valid link, e.g. google.com');
+            return;
+        }
         setSaving(true);
         try {
             const { error } = await supabase
@@ -50,7 +56,7 @@ export const useAssetEdit = (id: string) => {
                 .update({
                     name: project.name,
                     slug: project.slug,
-                    affiliate_link: project.affiliate_link,
+                    affiliate_link: affiliateLink,
                     review_title: project.review_title,
                     review_verdict: project.review_verdict,
                     review_description: project.review_description,
